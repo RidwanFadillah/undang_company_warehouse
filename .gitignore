@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.vite/
+*.tsbuildinfo
+
+# Cloudflare Wrangler (state D1 lokal + secret)
+.wrangler/
+.dev.vars
+.dev.vars.*
+.env
+.env.*
+!.env.example
+
+# Data bisnis & cadangan (JANGAN masuk git, isinya data toko)
+backup/
+db/seed/
+out/
+scripts/migrate/out/
+*.xlsx
+*.xls
+*.csv
+!db/**/*.csv.example
+
+# Test & laporan
+coverage/
+playwright-report/
+test-results/
+.lighthouseci/
+
+# Log
+*.log
+npm-debug.log*
+
+# Python (skrip migrasi)
+__pycache__/
+*.pyc
+.venv/
+
+# Editor & OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
