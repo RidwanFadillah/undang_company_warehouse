@@ -4,6 +4,8 @@ import type { Env, Variables } from './types';
 import { authMiddleware } from './middleware/auth';
 import { meRoute } from './routes/me';
 import { syncRoute } from './routes/sync';
+import { stockRoute } from './routes/stock';
+import { productsRoute } from './routes/products';
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 
@@ -29,6 +31,8 @@ const api = new Hono<{ Bindings: Env; Variables: Variables }>();
 api.use('*', authMiddleware);
 api.route('/me', meRoute);
 api.route('/sync', syncRoute);
+api.route('/stock', stockRoute);
+api.route('/products', productsRoute);
 
 app.route('/api', api);
 

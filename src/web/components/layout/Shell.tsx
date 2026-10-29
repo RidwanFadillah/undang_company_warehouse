@@ -6,9 +6,10 @@ import { useMaster } from '../../lib/masterStore';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { CommandPalette } from './CommandPalette';
+import { StockView } from '../stock/StockView';
 
 export const Shell: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('stock'); // Default to stock in Fase 2!
   const [isPaletteOpen, setIsPaletteOpen] = useState(false);
   const [skuSearchQuery, setSkuSearchQuery] = useState('');
 
@@ -78,201 +79,214 @@ export const Shell: React.FC = () => {
         {/* Content Body */}
         <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-50 dark:bg-slate-950">
           <div className="max-w-6xl mx-auto space-y-6">
-            {/* Top Metrics Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Card 1: Total Varian */}
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                    Total Varian Master
-                  </p>
-                  <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
-                    {variantList.length.toLocaleString('id-ID')}
-                  </p>
-                  <p className="text-[11px] text-blue-600 dark:text-blue-400 mt-1 flex items-center gap-1 font-medium">
-                    <Layers className="w-3 h-3" />
-                    <span>{productList.length} Produk Induk</span>
-                  </p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-                  <Package className="w-5 h-5" />
-                </div>
-              </div>
+            {activeTab === 'stock' ? (
+              <StockView />
+            ) : activeTab === 'dashboard' ? (
+              <>
+                {/* Top Metrics Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {/* Card 1: Total Varian */}
+                  <div
+                    onClick={() => setActiveTab('stock')}
+                    className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm flex items-center justify-between cursor-pointer hover:border-blue-300 transition-colors"
+                  >
+                    <div>
+                      <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                        Total Varian Master
+                      </p>
+                      <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+                        {variantList.length.toLocaleString('id-ID')}
+                      </p>
+                      <p className="text-[11px] text-blue-600 dark:text-blue-400 mt-1 flex items-center gap-1 font-medium">
+                        <Layers className="w-3 h-3" />
+                        <span>{productList.length} Produk Induk</span>
+                      </p>
+                    </div>
+                    <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                      <Package className="w-5 h-5" />
+                    </div>
+                  </div>
 
-              {/* Card 2: Saldo Stok */}
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                    Total Fisik Stok
-                  </p>
-                  <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
-                    {totalStockQty.toLocaleString('id-ID')}{' '}
-                    <span className="text-xs font-normal text-slate-400">pcs</span>
-                  </p>
-                  <p className="text-[11px] text-slate-400 mt-1">
-                    ≈ {Math.floor(totalStockQty / 12).toLocaleString('id-ID')} lusin
-                  </p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5" />
-                </div>
-              </div>
+                  {/* Card 2: Saldo Stok */}
+                  <div
+                    onClick={() => setActiveTab('stock')}
+                    className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm flex items-center justify-between cursor-pointer hover:border-emerald-300 transition-colors"
+                  >
+                    <div>
+                      <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                        Total Fisik Stok
+                      </p>
+                      <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
+                        {totalStockQty.toLocaleString('id-ID')}{' '}
+                        <span className="text-xs font-normal text-slate-400">pcs</span>
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        ≈ {Math.floor(totalStockQty / 12).toLocaleString('id-ID')} lusin
+                      </p>
+                    </div>
+                    <div className="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                      <TrendingUp className="w-5 h-5" />
+                    </div>
+                  </div>
 
-              {/* Card 3: Nilai Aset Stok */}
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                    Nilai Aset HPP Stok
-                  </p>
-                  <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
-                    Rp {(totalAssetValue / 1000000).toFixed(1)} jt
-                  </p>
-                  <p className="text-[11px] text-slate-400 mt-1">
-                    Rp {Math.round(totalAssetValue).toLocaleString('id-ID')}
-                  </p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center">
-                  <Sparkles className="w-5 h-5" />
-                </div>
-              </div>
+                  {/* Card 3: Nilai Aset Stok */}
+                  <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm flex items-center justify-between">
+                    <div>
+                      <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                        Nilai Aset HPP Stok
+                      </p>
+                      <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+                        Rp {(totalAssetValue / 1000000).toFixed(1)} jt
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        Rp {Math.round(totalAssetValue).toLocaleString('id-ID')}
+                      </p>
+                    </div>
+                    <div className="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                      <Sparkles className="w-5 h-5" />
+                    </div>
+                  </div>
 
-              {/* Card 4: Toko & Mitra */}
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                    Toko & Mitra
-                  </p>
-                  <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
-                    {storeList.length}{' '}
-                    <span className="text-xs font-normal text-slate-400">Toko</span>
-                  </p>
-                  <p className="text-[11px] text-slate-400 mt-1">
-                    {partnerList.length} Mitra (Konveksi/Supplier)
-                  </p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center">
-                  <Store className="w-5 h-5" />
-                </div>
-              </div>
-            </div>
-
-            {/* Quick In-Memory SKU Search Section */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
-                <div>
-                  <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                    <Search className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                    <span>Pencarian SKU In-Memory (Lokal)</span>
-                  </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    Data di-cache di IndexedDB, pencarian &lt; 16 ms tanpa round-trip jaringan.
-                  </p>
+                  {/* Card 4: Toko & Mitra */}
+                  <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm flex items-center justify-between">
+                    <div>
+                      <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                        Toko & Mitra
+                      </p>
+                      <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+                        {storeList.length}{' '}
+                        <span className="text-xs font-normal text-slate-400">Toko</span>
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        {partnerList.length} Mitra (Konveksi/Supplier)
+                      </p>
+                    </div>
+                    <div className="w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                      <Store className="w-5 h-5" />
+                    </div>
+                  </div>
                 </div>
 
-                <div className="relative w-full sm:w-72">
-                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <input
-                    type="text"
-                    value={skuSearchQuery}
-                    onChange={(e) => setSkuSearchQuery(e.target.value)}
-                    placeholder="Ketik SKU / nama / warna..."
-                    className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
+                {/* Quick In-Memory SKU Search Section */}
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+                    <div>
+                      <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                        <Search className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        <span>Pencarian SKU In-Memory (Lokal)</span>
+                      </h2>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        Data di-cache di IndexedDB, pencarian &lt; 16 ms tanpa round-trip jaringan.
+                      </p>
+                    </div>
 
-              {/* Table of Variants */}
-              <div className="overflow-x-auto mt-4">
-                <table className="w-full text-left text-xs">
-                  <thead>
-                    <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-400 font-medium">
-                      <th className="py-2.5 px-3">SKU</th>
-                      <th className="py-2.5 px-3">Nama Produk</th>
-                      <th className="py-2.5 px-3">Size</th>
-                      <th className="py-2.5 px-3">Warna</th>
-                      <th className="py-2.5 px-3 text-right">Stok Fisik</th>
-                      <th className="py-2.5 px-3 text-right">HPP / pcs</th>
-                      <th className="py-2.5 px-3 text-right">Harga Jual</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-sans">
-                    {searchResults.length === 0 ? (
-                      <tr>
-                        <td colSpan={7} className="py-8 text-center text-slate-400">
-                          {variantList.length === 0
-                            ? 'Menyinkronkan data master dari server...'
-                            : 'Tidak ada varian yang cocok dengan pencarian.'}
-                        </td>
-                      </tr>
-                    ) : (
-                      searchResults.map((item) => (
-                        <tr
-                          key={item.variantId}
-                          className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors"
-                        >
-                          <td className="py-2.5 px-3 font-mono font-semibold text-blue-600 dark:text-blue-400">
-                            {item.sku}
-                          </td>
-                          <td className="py-2.5 px-3 font-medium text-slate-800 dark:text-slate-200">
-                            {item.productName}
-                          </td>
-                          <td className="py-2.5 px-3">
-                            <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono text-[11px]">
-                              {item.size}
-                            </span>
-                          </td>
-                          <td className="py-2.5 px-3 text-slate-600 dark:text-slate-400">
-                            {item.color}
-                          </td>
-                          <td className="py-2.5 px-3 text-right font-semibold text-slate-900 dark:text-white">
-                            {item.stockQty} pcs
-                          </td>
-                          <td className="py-2.5 px-3 text-right text-slate-600 dark:text-slate-400">
-                            Rp {item.hpp.toLocaleString('id-ID')}
-                          </td>
-                          <td className="py-2.5 px-3 text-right font-medium text-emerald-600 dark:text-emerald-400">
-                            Rp {item.sellPrice.toLocaleString('id-ID')}
-                          </td>
+                    <div className="relative w-full sm:w-72">
+                      <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <input
+                        type="text"
+                        value={skuSearchQuery}
+                        onChange={(e) => setSkuSearchQuery(e.target.value)}
+                        placeholder="Ketik SKU / nama / warna..."
+                        className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Table of Variants Preview */}
+                  <div className="overflow-x-auto mt-4">
+                    <table className="w-full text-left text-xs">
+                      <thead>
+                        <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-400 font-medium">
+                          <th className="py-2.5 px-3">SKU</th>
+                          <th className="py-2.5 px-3">Nama Produk</th>
+                          <th className="py-2.5 px-3">Size</th>
+                          <th className="py-2.5 px-3">Warna</th>
+                          <th className="py-2.5 px-3 text-right">Stok Fisik</th>
+                          <th className="py-2.5 px-3 text-right">HPP / pcs</th>
+                          <th className="py-2.5 px-3 text-right">Harga Jual</th>
                         </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-sans">
+                        {searchResults.length === 0 ? (
+                          <tr>
+                            <td colSpan={7} className="py-8 text-center text-slate-400">
+                              {variantList.length === 0
+                                ? 'Menyinkronkan data master dari server...'
+                                : 'Tidak ada varian yang cocok dengan pencarian.'}
+                            </td>
+                          </tr>
+                        ) : (
+                          searchResults.map((item) => (
+                            <tr
+                              key={item.variantId}
+                              onClick={() => setActiveTab('stock')}
+                              className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors cursor-pointer"
+                            >
+                              <td className="py-2.5 px-3 font-mono font-semibold text-blue-600 dark:text-blue-400">
+                                {item.sku}
+                              </td>
+                              <td className="py-2.5 px-3 font-medium text-slate-800 dark:text-slate-200">
+                                {item.productName}
+                              </td>
+                              <td className="py-2.5 px-3">
+                                <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono text-[11px]">
+                                  {item.size}
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-3 text-slate-600 dark:text-slate-400">
+                                {item.color}
+                              </td>
+                              <td className="py-2.5 px-3 text-right font-semibold text-slate-900 dark:text-white">
+                                {item.stockQty} pcs
+                              </td>
+                              <td className="py-2.5 px-3 text-right text-slate-600 dark:text-slate-400">
+                                Rp {item.hpp.toLocaleString('id-ID')}
+                              </td>
+                              <td className="py-2.5 px-3 text-right font-medium text-emerald-600 dark:text-emerald-400">
+                                Rp {item.sellPrice.toLocaleString('id-ID')}
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
 
-              <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
-                <span>
-                  Menampilkan {searchResults.length} dari {variantList.length} varian
-                </span>
-                <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400 font-medium">
-                  Tekan{' '}
-                  <kbd className="px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-mono">
-                    Ctrl + K
-                  </kbd>{' '}
-                  untuk modal pencarian cepat
-                </span>
-              </div>
-            </div>
-
-            {/* Ready for Fase 2 Banner */}
-            <div className="bg-gradient-to-r from-blue-900/10 via-slate-900/5 to-emerald-900/10 border border-slate-200 dark:border-slate-800 rounded-xl p-5 flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
-                  Fase 1 Selesai: Sync Delta, Cache IndexedDB & Indeks SKU Aktif
+                  <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+                    <span>
+                      Menampilkan {searchResults.length} dari {variantList.length} varian
+                    </span>
+                    <button
+                      onClick={() => setActiveTab('stock')}
+                      className="flex items-center gap-1 text-blue-600 dark:text-blue-400 font-medium hover:underline"
+                    >
+                      <span>Buka Matriks Stok Lengkap</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-8 text-center space-y-3">
+                <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 mx-auto flex items-center justify-center">
+                  <Package className="w-6 h-6" />
+                </div>
+                <h3 className="text-base font-semibold text-slate-900 dark:text-white capitalize">
+                  Modul {activeTab}
                 </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
-                  Seluruh master dan saldo stok tersimpan di browser. Siap lanjut ke{' '}
-                  <strong>Fase 2: Stok Master (Matriks Size × Warna, Kartu Stok, Opname)</strong>.
+                <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                  Modul ini siap dikembangkan pada roadmap fase berikutnya (Fase 3: Barang Masuk,
+                  Fase 4: Pesanan, dll).
                 </p>
+                <button
+                  onClick={() => setActiveTab('stock')}
+                  className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm inline-flex items-center gap-2"
+                >
+                  <Layers className="w-4 h-4" />
+                  <span>Buka Modul Stok Master</span>
+                </button>
               </div>
-              <button
-                onClick={() => setActiveTab('stock')}
-                className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium transition-colors shrink-0 shadow-sm"
-              >
-                <span>Lihat Modul Stok</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
+            )}
           </div>
         </main>
       </div>
@@ -283,6 +297,7 @@ export const Shell: React.FC = () => {
         onClose={() => setIsPaletteOpen(false)}
         onSelectVariant={(item) => {
           setSkuSearchQuery(item.sku);
+          setActiveTab('stock');
         }}
       />
     </div>
