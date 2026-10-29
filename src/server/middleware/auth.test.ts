@@ -112,6 +112,43 @@ describe('Auth Middleware (Cloudflare Access & Dev Bypass)', () => {
     expect(body.error.code).toBe('UNAUTHORIZED');
   });
 
+  it('Non-dev mode (e.g. staging or undefined): rejects request with 401 even if DEV_AUTH_EMAIL is set', async () => {
+    const mockDb = createMockD1([
+      { email: 'owner@local', name: 'Owner', role: 'owner', is_active: 1 },
+    ]);
+    const app = new Hono<{ Bindings: Env; Variables: Variables }>();
+
+    app.use('*', createAuthMiddleware());
+    app.get('/api/me', (c) => c.json({ user: c.get('user') }));
+
+    // Test with ENV: 'staging'
+    const resStaging = await app.request(
+      '/api/me',
+      {},
+      {
+        DB: mockDb,
+        ENV: 'staging',
+        DEV_AUTH_EMAIL: 'owner@local',
+        ACCESS_TEAM_DOMAIN: 'test.cloudflareaccess.com',
+        ACCESS_AUD: 'test-aud',
+      }
+    );
+    expect(resStaging.status).toBe(401);
+
+    // Test with ENV: undefined
+    const resUndefined = await app.request(
+      '/api/me',
+      {},
+      {
+        DB: mockDb,
+        DEV_AUTH_EMAIL: 'owner@local',
+        ACCESS_TEAM_DOMAIN: 'test.cloudflareaccess.com',
+        ACCESS_AUD: 'test-aud',
+      }
+    );
+    expect(resUndefined.status).toBe(401);
+  });
+
   it('Dev mode: bypasses authentication using DEV_AUTH_EMAIL when header is absent', async () => {
     const mockDb = createMockD1([]);
     const app = new Hono<{ Bindings: Env; Variables: Variables }>();
