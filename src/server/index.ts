@@ -6,6 +6,11 @@ import { meRoute } from './routes/me';
 import { syncRoute } from './routes/sync';
 import { stockRoute } from './routes/stock';
 import { productsRoute } from './routes/products';
+import { partnersRoute } from './routes/partners';
+import { inboundRoute } from './routes/inbound';
+import { ordersRoute } from './routes/orders';
+import { mappingsRoute } from './routes/mappings';
+import { outboundRoute } from './routes/outbound';
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 
@@ -33,6 +38,11 @@ api.route('/me', meRoute);
 api.route('/sync', syncRoute);
 api.route('/stock', stockRoute);
 api.route('/products', productsRoute);
+api.route('/partners', partnersRoute);
+api.route('/inbound', inboundRoute);
+api.route('/orders', ordersRoute);
+api.route('/mappings', mappingsRoute);
+api.route('/outbound', outboundRoute);
 
 app.route('/api', api);
 

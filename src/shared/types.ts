@@ -132,3 +132,58 @@ export interface MasterState {
   fee_profiles: Record<number, FeeProfile>;
   settings: Record<string, Setting>;
 }
+
+export type InboundSource = 'beli' | 'maklun';
+
+export interface InboundDoc {
+  id: number;
+  doc_no: string | null;
+  doc_date: string;
+  source: InboundSource;
+  partner_id: number | null;
+  partner_name?: string | null;
+  batch_id: number | null;
+  invoice_id: number | null;
+  note: string | null;
+  voided_at: number | null;
+  created_by: string | null;
+  created_at: number;
+  line_count?: number;
+  total_qty?: number;
+  total_amount?: number;
+}
+
+export interface InboundLine {
+  id: number;
+  doc_id: number;
+  variant_id: number;
+  sku?: string;
+  product_name?: string;
+  size?: string;
+  color?: string;
+  qty: number;
+  unit_cost: number;
+  total_cost?: number;
+}
+
+export interface InboundDetail extends InboundDoc {
+  lines: InboundLine[];
+}
+
+export interface CreateInboundLinePayload {
+  variant_id: number;
+  qty: number; // in pcs
+  unit_cost: number;
+}
+
+export interface CreateInboundPayload {
+  doc_no?: string | null;
+  doc_date: string; // YYYY-MM-DD
+  source?: InboundSource;
+  partner_id?: number | null;
+  batch_id?: number | null;
+  note?: string | null;
+  create_invoice?: boolean;
+  due_date?: string | null;
+  lines: CreateInboundLinePayload[];
+}

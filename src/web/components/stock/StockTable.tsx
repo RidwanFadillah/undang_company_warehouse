@@ -115,7 +115,6 @@ export const StockTable: React.FC<StockTableProps> = ({
                 <ArrowUpDown className="w-3 h-3" />
               </div>
             </th>
-            <th className="py-3 px-4 text-right">Harga Jual</th>
             <th
               onClick={() => handleSort('asset')}
               className="py-3 px-4 text-right cursor-pointer hover:text-slate-800 dark:hover:text-slate-200"
@@ -131,7 +130,7 @@ export const StockTable: React.FC<StockTableProps> = ({
         <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-sans">
           {sortedItems.length === 0 ? (
             <tr>
-              <td colSpan={8} className="py-12 text-center text-slate-400">
+              <td colSpan={7} className="py-12 text-center text-slate-400">
                 Tidak ada varian yang cocok dengan pencarian / filter.
               </td>
             </tr>
@@ -183,10 +182,6 @@ export const StockTable: React.FC<StockTableProps> = ({
 
                   <td className="py-2.5 px-4 text-right font-mono text-slate-600 dark:text-slate-400">
                     {formatRupiah(v.hpp)}
-                  </td>
-
-                  <td className="py-2.5 px-4 text-right font-mono text-emerald-600 dark:text-emerald-400 font-medium">
-                    {formatRupiah(v.sell_price)}
                   </td>
 
                   <td className="py-2.5 px-4 text-right font-mono text-slate-700 dark:text-slate-300 font-semibold">

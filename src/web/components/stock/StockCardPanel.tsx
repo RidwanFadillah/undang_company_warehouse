@@ -174,9 +174,6 @@ export const StockCardPanel: React.FC<StockCardPanelProps> = ({
           <p className="text-xl font-bold text-slate-900 dark:text-white mt-0.5">
             {formatRupiah(variant.hpp)}
           </p>
-          <p className="text-[10px] text-slate-400 mt-1">
-            Jual: {formatRupiah(variant.sell_price)}
-          </p>
         </div>
       </div>
 

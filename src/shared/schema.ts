@@ -163,6 +163,117 @@ export const SetHppBySizeSchema = z.object({
   hpp_by_size: z.record(z.string(), z.number().nonnegative()),
 });
 
+// Inbound Schemas
+export const InboundLineItemSchema = z.object({
+  variant_id: z.number().int().positive(),
+  qty: z.number().int().positive(),
+  unit_cost: z.number().nonnegative().default(0),
+});
+
+export const CreateInboundSchema = z.object({
+  doc_no: z.string().optional().nullable(),
+  doc_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Format tanggal YYYY-MM-DD'),
+  source: z.enum(['beli', 'maklun']).default('beli'),
+  partner_id: z.number().int().positive().optional().nullable(),
+  batch_id: z.number().int().positive().optional().nullable(),
+  note: z.string().optional().nullable(),
+  create_invoice: z.boolean().optional().default(false),
+  due_date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional()
+    .nullable(),
+  lines: z.array(InboundLineItemSchema).min(1, 'Minimal 1 baris barang masuk'),
+});
+
+export const InboundQuerySchema = z.object({
+  month: z
+    .string()
+    .regex(/^\d{4}-\d{2}$/)
+    .optional(),
+  partner_id: z.coerce.number().int().positive().optional(),
+  source: z.enum(['beli', 'maklun']).optional(),
+  limit: z.coerce.number().int().positive().max(200).optional().default(50),
+});
+
+// Partner Schemas
+export const CreatePartnerSchema = z.object({
+  code: z.string().optional().nullable(),
+  name: z.string().min(1, 'Nama mitra wajib diisi'),
+  type: z.enum(['konveksi', 'supplier', 'reseller', 'toko_online']),
+  pic: z.string().optional().nullable(),
+  phone: z.string().optional().nullable(),
+  note: z.string().optional().nullable(),
+});
+
+export const UpdatePartnerSchema = CreatePartnerSchema.partial().extend({
+  is_active: z.number().int().min(0).max(1).optional(),
+});
+
+// Orders & Outbound Schemas
+export const ImportOrderRowSchema = z.object({
+  order_no: z.string().min(1, 'No. Pesanan wajib ada'),
+  ordered_at: z.string().optional().nullable(),
+  status_raw: z.string().optional().nullable(),
+  store_sku: z.string().min(1, 'SKU Toko wajib ada'),
+  variation: z.string().optional().nullable().default(''),
+  qty: z.number().int().positive('Qty harus lebih besar dari 0'),
+  buyer_note: z.string().optional().nullable(),
+});
+
+export const ImportOrdersSchema = z.object({
+  store_id: z.number().int().positive(),
+  filename: z.string().optional().nullable(),
+  rows: z.array(ImportOrderRowSchema).min(1, 'Minimal 1 baris pesanan').max(1000),
+});
+
+export const ProcessOrdersSchema = z.object({
+  line_ids: z.array(z.number().int().positive()).optional(),
+  all_ready: z.boolean().optional().default(false),
+  store_id: z.number().int().positive().optional().nullable(),
+});
+
+export const ResolveRandomSchema = z.object({
+  picks: z
+    .array(
+      z.object({
+        variant_id: z.number().int().positive(),
+        qty: z.number().int().positive(),
+      })
+    )
+    .min(1),
+});
+
+export const CreateOutboundSchema = z.object({
+  out_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Format tanggal YYYY-MM-DD'),
+  store_id: z.number().int().positive().optional().nullable(),
+  note: z.string().optional().nullable(),
+  items: z
+    .array(
+      z.object({
+        variant_id: z.number().int().positive(),
+        qty: z.number().int().positive(),
+      })
+    )
+    .min(1),
+});
+
+export const CreateSkuMappingSchema = z.object({
+  store_id: z.number().int().positive(),
+  store_sku: z.string().min(1),
+  variation_key: z.string().default(''),
+  product_id: z.number().int().positive(),
+  size: z.string().optional().nullable(),
+  color: z.string().optional().nullable(),
+  qty_multiplier: z.number().int().positive().default(1),
+  map_type: z.enum(['pasti', 'random', 'bundle', 'setelan']).default('pasti'),
+  note: z.string().optional().nullable(),
+});
+
+export const BulkCreateSkuMappingSchema = z.object({
+  mappings: z.array(CreateSkuMappingSchema).min(1),
+});
+
 export type UserRole = z.infer<typeof UserRoleSchema>;
 export type User = z.infer<typeof UserSchema>;
 export type MeResponse = z.infer<typeof MeResponseSchema>;
@@ -173,3 +284,13 @@ export type CreateProductInput = z.infer<typeof CreateProductSchema>;
 export type BulkCreateVariantsInput = z.infer<typeof BulkCreateVariantsSchema>;
 export type UpdateVariantInput = z.infer<typeof UpdateVariantSchema>;
 export type SetHppBySizeInput = z.infer<typeof SetHppBySizeSchema>;
+export type CreateInboundInput = z.infer<typeof CreateInboundSchema>;
+export type CreatePartnerInput = z.infer<typeof CreatePartnerSchema>;
+export type UpdatePartnerInput = z.infer<typeof UpdatePartnerSchema>;
+export type ImportOrderRow = z.infer<typeof ImportOrderRowSchema>;
+export type ImportOrdersInput = z.infer<typeof ImportOrdersSchema>;
+export type ProcessOrdersInput = z.infer<typeof ProcessOrdersSchema>;
+export type ResolveRandomInput = z.infer<typeof ResolveRandomSchema>;
+export type CreateOutboundInput = z.infer<typeof CreateOutboundSchema>;
+export type CreateSkuMappingInput = z.infer<typeof CreateSkuMappingSchema>;
+export type BulkCreateSkuMappingInput = z.infer<typeof BulkCreateSkuMappingSchema>;

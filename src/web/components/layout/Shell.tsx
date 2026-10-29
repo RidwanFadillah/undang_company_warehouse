@@ -7,6 +7,8 @@ import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { CommandPalette } from './CommandPalette';
 import { StockView } from '../stock/StockView';
+import { InboundView } from '../inbound/InboundView';
+import { OrdersView } from '../orders/OrdersView';
 
 export const Shell: React.FC = () => {
   const [activeTab, setActiveTab] = useState('stock'); // Default to stock in Fase 2!
@@ -79,7 +81,11 @@ export const Shell: React.FC = () => {
         {/* Content Body */}
         <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-50 dark:bg-slate-950">
           <div className="max-w-6xl mx-auto space-y-6">
-            {activeTab === 'stock' ? (
+            {activeTab === 'orders' ? (
+              <OrdersView />
+            ) : activeTab === 'inbound' ? (
+              <InboundView />
+            ) : activeTab === 'stock' ? (
               <StockView />
             ) : activeTab === 'dashboard' ? (
               <>
@@ -203,13 +209,12 @@ export const Shell: React.FC = () => {
                           <th className="py-2.5 px-3">Warna</th>
                           <th className="py-2.5 px-3 text-right">Stok Fisik</th>
                           <th className="py-2.5 px-3 text-right">HPP / pcs</th>
-                          <th className="py-2.5 px-3 text-right">Harga Jual</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-sans">
                         {searchResults.length === 0 ? (
                           <tr>
-                            <td colSpan={7} className="py-8 text-center text-slate-400">
+                            <td colSpan={6} className="py-8 text-center text-slate-400">
                               {variantList.length === 0
                                 ? 'Menyinkronkan data master dari server...'
                                 : 'Tidak ada varian yang cocok dengan pencarian.'}
@@ -241,9 +246,6 @@ export const Shell: React.FC = () => {
                               </td>
                               <td className="py-2.5 px-3 text-right text-slate-600 dark:text-slate-400">
                                 Rp {item.hpp.toLocaleString('id-ID')}
-                              </td>
-                              <td className="py-2.5 px-3 text-right font-medium text-emerald-600 dark:text-emerald-400">
-                                Rp {item.sellPrice.toLocaleString('id-ID')}
                               </td>
                             </tr>
                           ))
