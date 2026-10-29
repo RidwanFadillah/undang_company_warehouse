@@ -3,6 +3,7 @@ import { cors } from 'hono/cors';
 import type { Env, Variables } from './types';
 import { authMiddleware } from './middleware/auth';
 import { meRoute } from './routes/me';
+import { syncRoute } from './routes/sync';
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 
@@ -11,7 +12,7 @@ app.use(
   '/api/*',
   cors({
     origin: (origin) => origin || '*',
-    allowHeaders: ['Content-Type', 'Cf-Access-Jwt-Assertion'],
+    allowHeaders: ['Content-Type', 'Cf-Access-Jwt-Assertion', 'If-None-Match'],
     allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     exposeHeaders: ['Content-Length', 'ETag'],
     maxAge: 600,
@@ -27,6 +28,7 @@ app.get('/api/health', (c) => {
 const api = new Hono<{ Bindings: Env; Variables: Variables }>();
 api.use('*', authMiddleware);
 api.route('/me', meRoute);
+api.route('/sync', syncRoute);
 
 app.route('/api', api);
 

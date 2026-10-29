@@ -16,12 +16,15 @@
     "lint": "eslint . --ext ts,tsx --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "perf": "node scripts/perf-bundle.js"
+    "perf": "node scripts/perf-bundle.js",
+    "seed:dev": "node scripts/seed/dev.js",
+    "seed:perf": "node scripts/seed/perf.js"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.66.0",
     "clsx": "^2.1.1",
     "hono": "^4.7.2",
+    "idb-keyval": "^6.3.0",
     "jose": "^5.9.6",
     "lucide-react": "^0.475.0",
     "react": "^18.3.1",

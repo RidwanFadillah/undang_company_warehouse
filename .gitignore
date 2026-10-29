@@ -17,6 +17,7 @@ dist/
 # Data bisnis & cadangan (JANGAN masuk git, isinya data toko)
 backup/
 db/seed/
+scripts/seed/*.sql
 out/
 scripts/migrate/out/
 *.xlsx
